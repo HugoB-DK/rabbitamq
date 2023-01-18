@@ -43,14 +43,27 @@ docker compose -f docker-compose.yml up
 ```json
 [
     {
-        "_id": ObjectId(),
+        "_id": "ObjectId()",
         "name": "string",
         "flag": "string"
     },
     {
-        ...
+        "..."
     }
 ]
 ```
+
+#### Example order
+
+- POST localhost:3000/commande   
+
+>*body*   
+
+```json
+{
+    "name": "ORDER #2023",
+}
+```
+
 ## Credits ## 
 Hugo BLANCHARD
