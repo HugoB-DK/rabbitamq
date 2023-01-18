@@ -36,7 +36,7 @@ docker compose -f docker-compose.yml up
 
 #### Get orders
 
-- GET localhost:3000/commandes
+- GET localhost:3000/commande
 
 >*response*   
 
@@ -61,7 +61,7 @@ docker compose -f docker-compose.yml up
 
 ```json
 {
-    "name": "ORDER #2023",
+    "name": "ORDER #2023"
 }
 ```
 
