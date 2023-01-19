@@ -1,6 +1,8 @@
 const Commande = require("../models/Commande");
 const amqplib = require('amqplib/callback_api');
 const queue = 'commandes';
+const exchange = 'commandeExchange'
+const exchangeType = 'fanout'
 
 exports.commande_get_post = (req, res) => {
     Commande.find({}, (err, commandes) => {
@@ -37,55 +39,28 @@ exports.commande_create_post = (req, res) => {
       //AMQP : Add to queue
       amqplib.connect(process.env.AMQP_URL, (err, conn) => {
         if (err) throw err;
-        console.log("Connection rabbitmq");
+        console.log("Connected to rabbitmq");
 
 
-        conn.createChannel((err, ch) => {
+        conn.createChannel(async(err, ch) => {
           if (err) throw err;
-          console.log("Channel created");
+
+          await ch.assertExchange(exchange, exchangeType, { durable: true, autoDelete: false })
       
-          ch.assertQueue(queue, {durable: true});
+          await ch.assertQueue(queue, {durable: true});
+
+          await ch.bindQueue(queue, exchange, '')
+
+          ch.publish(exchange, '#', Buffer.from(data._id))
       
-          ch.sendToQueue(queue, Buffer.from(data._id))
+          // ch.sendToQueue(queue, Buffer.from(data._id))
           console.log("Commande Status : en cours");
 
         });
       })
-
-      worker();
 
     })//.create()
 
 }
 
 
-//
-// WORKER AMQP : Execute la queue RabbitMQ
-//
-
-function worker(){
-  amqplib.connect(process.env.AMQP_URL, (err, conn) => {
-    if (err) throw err;
-    console.log("Connection rabbitmq");
-
-
-    conn.createChannel((err, ch) => {
-      if (err) throw err;
-      console.log("Channel created");
-  
-      ch.assertQueue(queue, {durable: true});
-
-      ch.consume(queue, (msg) => {
-          if(msg !== null){
-      
-            console.log("Message :", msg.content.toString());
-              Commande.findByIdAndUpdate(msg.content.toString() , {'flag': 'commande terminée'}, {upsert: true}, () => {
-                if (err) throw err;
-                console.log("Commande updated");
-              })
-          }
-      })
-
-    });
-  })
-}

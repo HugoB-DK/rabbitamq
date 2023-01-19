@@ -4,7 +4,8 @@
   "description": "Projet 2 Cloud Computing",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon",
+    "start-api": "nodemon api.js",
+    "start-worker": "nodemon worker.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Hugo",

@@ -8,7 +8,7 @@ services:
     working_dir: /app
     ports:
       - "3000:3000"
-    command: bash -c "yarn install && yarn start"
+    command: bash -c "bash ./wait.sh && npm install && npm run start-api"
     networks:
       - test_amqp_network
   ampq_mongodb:
@@ -34,6 +34,15 @@ services:
     environment:
       - RABBITMQ_DEFAULT_USER=admin
       - RABBITMQ_DEFAULT_PASS=password
+    networks:
+      - test_amqp_network
+  ampq_worker:
+    image: arm64v8/node:16
+    container_name: ampq_worker
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: bash -c "bash ./wait.sh && npm run start-worker"
     networks:
       - test_amqp_network
 networks:

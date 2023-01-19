@@ -1,7 +1,7 @@
 const mongoose = require("mongoose")
 
 mongoose.set("strictQuery", false);
-mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect("mongodb://ampq:password@ampq_mongodb:27017/ampq", { useNewUrlParser: true, useUnifiedTopology: true })
 
 const db = mongoose.connection
 
